@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/style.css">
+
+  </head>
+  <body>
+    <!-- Make "Add to cart" to have a modal appearing for confirmation  -->
+    <!-- On the Navbar, move or change the categories to the right as well  -->
+
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3 fixed-top" aria-label="navbar">
+      <div class="container">
+        <a class="navbar-brand" href="#"><img src="/img/image_placeholder.jpg" alt="brand-image" class="rounded-5"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar-collapse">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <button class="btn category-filter" value="Mug" >Mugs</button>
+            </li>
+            <li class="nav-item">
+              <button class="btn category-filter" value="Shirt">Shirts</button>
+            </li>
+            <li class="nav-item">
+              <button class="btn category-filter" value="all">Show all</button>
+            </li>
+          </ul>
+          <div>
+            <a href=""  class="btn">Login</a>
+            <a href="" class="btn">Register</a>
+            
+          </div>
+        </div>
+      </div>
+    </nav>
+
+
+
+    <!-- Main  -->
+      <div class="container main">
+
+        <!-- Product description -->
+        <div class="product-description bg-light" id="product-description">
+        </div>
+
+        <!-- Sort by -->
+        <div class="sortbar container-fluid bg-light text-center p-4">
+          <div class="sortbar-top">
+            <h6 id="showing-products" class="small"></h6>
+          </div>
+          <div class="dropdown sortbar-bottom">
+            <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Sort by
+            </button>
+            <ul class="dropdown-menu">
+              <button class="dropdown-item sorting-filter" value="AtoZ" href="#">Title: A to Z</button>
+              <button class="dropdown-item sorting-filter" value="ZtoA" href="#">Title: Z to A</button>
+              <button class="dropdown-item sorting-filter" value="LowToHigh" href="#">Price: Ascending</button>
+              <button class="dropdown-item sorting-filter" value="HighToLow" href="#">Price: Descending</button>
+            </ul>
+          </div>
+        </div>
+
+        
+
+        <!-- Fixed sidebar -->
+        <div class="sidebar sidebar-assist container-fluid ">
+        </div>
+
+        <div class="sidebar sidebar-fixed container-fluid bg-light position-fixed">
+          <h5 class="text-center">Filters</h5>
+          <p class="text-center">By Manufacturer</p>
+          <div class="manufacturers" id="manufacturers">
+            <ul class="manList" id="manList">
+            </ul>
+          </div>
+          <p class="text-center">By Price</p>
+          <div class="priceFilter">
+            <input type="number" name="lowestPrice" id="lowestPrice" placeholder="0" class="price-input">
+            <p>-</p>
+            <input type="number" name="highestPrice" id="highestPrice" placeholder="1000" class="price-input">
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-success mt-3 filter-button" id="filter-button">Filter</button>
+            <button type="submit" class="btn btn-danger mt-3 filter-button" id="clear-filters-button">Clear</button>
+          </div>
+        </div>
+
+        <!-- Data grid  -->
+        <div id="dataContainer" class="dataContainer container d-flex flex-wrap justify-content-center gap-3">
+        </div> 
+
+        <!-- Added to Cart Modal -->
+        <div class="modal fade" id="addedToCart" tabindex="-1" aria-labelledby="addedToCart" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header border-0">
+                <h1 class="modal-title fs-5" id="addedToCart">Item added to cart</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-footer border-0">
+                <button type="button" class="btn btn-primary">Go to checkout</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Show more button  -->
+        <div class="container m-auto text-center mb-1 show-more">
+          <button class="btn btn-outline-success show-more-button" id="show-more-button">Show more items</button>
+        </div>
+      </div>
+    
+      <!-- Footer -->
+      <footer class="text-center container-fluid text-lg-start bg-light text-muted p-0">
+        <section class="d-flex justify-content-center p-3 border-bottom container">
+          <div class="me-5 d-none d-lg-block">
+            <span>Get connected with us on social networks:</span>
+          </div>
+          <div>
+            <a href="" class="me-4 text-reset social">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="" class="me-4 text-reset social">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="" class="me-4 text-reset social">
+              <i class="fab fa-google"></i>
+            </a>
+            <a href="" class="me-4 text-reset social">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="" class="me-4 text-reset social">
+              <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="" class="me-4 text-reset social">
+              <i class="fab fa-github"></i>
+            </a>
+          </div>
+        </section>
+        <section class="">
+          <div class="container text-center text-md-start mt-3">
+            <div class="row">
+              <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                <h6 class="text-uppercase fw-bold mb-4">
+                  <i class="fas fa-gem me-3"></i>Company name
+                </h6>
+                <p>
+                  Sed at mattis odio, quis vehicula mauris. Nunc efficitur mauris id lectus sodales, tincidunt vehicula neque facilisis. Duis vehicula, eros in congue pulvinar.
+                </p>
+              </div>
+              <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-2">
+                <h6 class="text-uppercase fw-bold mb-2">
+                  Products
+                </h6>
+                <p>
+                  <a href="#!" class="text-reset">HTML</a>
+                </p>
+                <p>
+                  <a href="#!" class="text-reset">CSS</a>
+                </p>
+                <p>
+                  <a href="#!" class="text-reset">JavaScript</a>
+                </p>
+                <p>
+                  <a href="#!" class="text-reset">PHP</a>
+                </p>
+              </div>
+              <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-2">
+                <h6 class="text-uppercase fw-bold mb-2">
+                  Useful links
+                </h6>
+                <p>
+                  <a href="#!" class="text-reset">Pricing</a>
+                </p>
+                <p>
+                  <a href="#!" class="text-reset">Settings</a>
+                </p>
+                <p>
+                  <a href="#!" class="text-reset">Orders</a>
+                </p>
+                <p>
+                  <a href="#!" class="text-reset">Help</a>
+                </p>
+              </div>
+              <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-2">
+                <h6 class="text-uppercase fw-bold mb-2">Contacts</h6>
+                <p><i class="fas fa-home me-3"></i> New York, NY 10012, US</p>
+                <p>
+                  <i class="fas fa-envelope me-3"></i>
+                  info@example.com
+                </p>
+                <p><i class="fas fa-phone me-3"></i> + 01 234 567 88</p>
+                <p><i class="fas fa-print me-3"></i> + 01 234 567 89</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <div class="text-center p-2 copyright">
+          © 2023 Copyright
+        </div>
+      </footer>
+    <!-- End main  -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
