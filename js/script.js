@@ -251,7 +251,7 @@ function updateShowCount(count) {
 function addCards(data, i) {
     const card =  
     '<div class="card" id="'+i+'" style="width: 18rem;">'+
-    '<img src="../img/image_placeholder.jpg" class="card-img-top" alt="...">'+
+    '<img src="img/image_placeholder.jpg" class="card-img-top" alt="...">'+
     '<div class="card-body" id="card">'+
         '<h5 class="card-title">' + data[i].name + '</h5>'+
         '<p class="card-description">' + data[i].description.slice(0,25) + '</p>'+
