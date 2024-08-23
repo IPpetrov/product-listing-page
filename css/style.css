@@ -145,6 +145,10 @@ footer { grid-area: footer; }
 
 /* Card */
 
+.card {
+    min-height: 368px;;
+}
+
 .card > img{
     height: 100px;
 }

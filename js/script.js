@@ -13,7 +13,7 @@ const lowestPrice = document.getElementById("lowestPrice");
 const highestPrice = document.getElementById("highestPrice");
 const filterButton = document.getElementById("filter-button");
 const clearFiltersButton = document.getElementById("clear-filters-button");
-var currentCategory = "Mug";
+var currentCategory = "all";
 data = notSortedData;
 
 // Filters
@@ -22,17 +22,37 @@ function applyFilters() {
     const list = selectedManufacturers();
 
     // Filter by price only
-    if (list == "" && lowestPrice.value != "" && highestPrice.value != "" && parseFloat(lowestPrice.value) <= parseFloat(highestPrice.value)) {
+    //If only one price range given
+    if (list.length == 0 && (lowestPrice.value != "" || highestPrice.value != "")) {
+        if (lowestPrice.value == "") {
+            data = data.filter(item => item.price >= -9999999 && item.price <= parseFloat(highestPrice.value))
+        } 
+        else if (highestPrice.value == "") {
+            data = data.filter(item => item.price >= parseFloat(lowestPrice.value) && item.price <= 99999999)
+        }
+    }
+    //If both price ranges are given
+    if (list.length == 0 && lowestPrice.value != "" && highestPrice.value != "" && parseFloat(lowestPrice.value) <= parseFloat(highestPrice.value) ) {
         data = data.filter(item => item.price >= lowestPrice.value && item.price <= highestPrice.value)
     }
     // Filter by manufacturer only
     else if (list != "" && lowestPrice.value == "" && highestPrice.value == "") {
         data = data.filter(item => list.includes(item.manufacturer));
     }
-    // Filter by both
-    else if (list != "" && lowestPrice.value != "" && highestPrice.value != "" && parseFloat(lowestPrice.value) <= parseFloat(highestPrice.value)) {
-        data = data.filter(item => item.price >= lowestPrice.value && item.price <= highestPrice.value);
+    // Filter by both manufacturer and price
+    else if (list != "" && lowestPrice.value != "" && highestPrice.value != "" && parseFloat(lowestPrice.value) <= parseFloat(highestPrice.value) ) {
+        data = data.filter(item => item.price >= lowestPrice.value && item.price <= highestPrice.value)
         data = data.filter(item => list.includes(item.manufacturer));
+    }
+    else if (list != "" && (lowestPrice.value != "" || highestPrice.value != "")) {
+        if (lowestPrice.value == "") {
+            data = data.filter(item => item.price >= -9999999 && item.price <= parseFloat(highestPrice.value))
+            data = data.filter(item => list.includes(item.manufacturer));
+        } 
+        else if (highestPrice.value == "") {
+            data = data.filter(item => item.price >= parseFloat(lowestPrice.value) && item.price <= 99999999)
+            data = data.filter(item => list.includes(item.manufacturer));
+        }
     }
     categoryFilter(data, currentCategory)
 }
@@ -100,44 +120,63 @@ function showMoreButtonItems(data, category, lastItem){
 // SortBy buttons
 sortByButtons.forEach(button => {
     button.addEventListener("click", () => {
+        button.classList.add("active")
         sortBy(button.value);
-        showProductCount(currentCategory);
-        lowestPrice.value = ""
-        highestPrice.value = ""
     })
 });
 
 // SortBy function
 function sortBy(method) {
+    sortByButtons.forEach(button => {
+        button.classList.remove("active")
+    })
+    document.getElementById(method).classList.add("active")
     if (method == "AtoZ") {
         data = notSortedData.sort((a,b) => {
             if (a.name < b.name) {
                 return -1;
-              }
+            }
+            if (a.name > b.name) {
+            return 1;
+            }
+            return 0;
         });
     }
     else if (method == "ZtoA") {
         data = notSortedData.sort((a,b) => {
             if (a.name > b.name) {
                 return -1;
-              }
+            }
+            if (a.name < b.name) {
+            return 1;
+            }
+            return 0;
         });
     }
     else if (method == "LowToHigh") {
         data = notSortedData.sort((a,b) => {
             if (a.price < b.price) {
                 return -1;
-              }
+            }
+            if (a.price > b.price) {
+            return 1;
+            }
+            return 0;
         });
     }
     else if (method == "HighToLow") {
         data = notSortedData.sort((a,b) => {
             if (a.price > b.price) {
                 return -1;
-              }
+            }
+            if (a.price < b.price) {
+            return 1;
+            }
+            return 0;
         });
     }
-    categoryFilter(data, currentCategory);
+    applyFilters();
+    categoryFilter(data, currentCategory);    
     showMoreButton.classList.remove("hidden")
 }
 
@@ -146,6 +185,14 @@ function categoryFilter(data, category){
     dataContainer.innerHTML = "";
     var counter = 0;
     var showLimit = 9
+    //remove active border
+    categoryFilterButtons.forEach(button => {
+        button.classList.remove("active")
+    })
+    //add active border to current selection
+    var categoryButton = document.getElementById(category)
+    categoryButton.classList.add("active")
+
     for (var i = 0; i < data.length; i++) {
         if (category == "all" && counter < showLimit ) {
             var div = document.createElement("div");
@@ -164,15 +211,13 @@ function categoryFilter(data, category){
     showProductDescription(category);
     showMoreButton.classList.remove("hidden")
 }
-categoryFilter(data, "Mug");
+categoryFilter(data, "all");
 
 // Category buttons
 categoryFilterButtons.forEach(button => {
     button.addEventListener("click", () => {
         currentCategory = button.value;
         categoryFilter(data, button.value);
-        lowestPrice.value = ""
-        highestPrice.value = ""
     })
 });
 
@@ -202,11 +247,10 @@ function uniqueManufacturers(data) {
 function selectedManufacturers() {
     let arr = [];
     let checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
-   checkboxes.forEach((item)=>{
-      arr.push(item.value)
-   }) 
-   console.log(arr);
-   return arr;
+    checkboxes.forEach((item)=>{
+        arr.push(item.value)
+    }) 
+    return arr;
    }
 
 // Show number of all products of the chosen category
@@ -252,16 +296,21 @@ function addCards(data, i) {
     const card =  
     '<div class="card" id="'+i+'" style="width: 18rem;">'+
     '<img src="img/image_placeholder.jpg" class="card-img-top" alt="...">'+
-    '<div class="card-body" id="card">'+
-        '<h5 class="card-title">' + data[i].name + '</h5>'+
-        '<p class="card-description">' + data[i].description.slice(0,25) + '</p>'+
-        '<h6 class="card-price">' + data[i].price + ' $</h6>'+
-        '<div class="mb-2"><span class="fa fa-star checked"></span>'+
-        '<span class="fa fa-star checked"></span>'+
-        '<span class="fa fa-star checked"></span>'+
-        '<span class="fa fa-star"></span>'+
-        '<span class="fa fa-star"></span></div>'+
-        '<btn href="#" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addedToCart">Add to cart</btn>'+
+    '<div class="card-body d-flex flex-column justify-content-between" id="card">'+
+        '<div>'+
+            '<h5 class="card-title">' + data[i].name + '</h5>'+
+            '<p class="card-description">' + data[i].description.slice(0,25) + '</p>'+
+            '<p class="card-manufacturer">Manufacturer: ' + data[i].manufacturer + '</p>'+
+        '</div>'+
+        '<div>'+
+            '<h6 class="card-price">' + data[i].price + ' $</h6>'+
+            '<div class="mb-2"><span class="fa fa-star checked"></span>'+
+            '<span class="fa fa-star checked"></span>'+
+            '<span class="fa fa-star checked"></span>'+
+            '<span class="fa fa-star"></span>'+
+            '<span class="fa fa-star"></span></div>'+
+            '<btn href="#" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addedToCart">Add to cart</btn>'+
+        '</div>'+
     '</div>'+
     '</div>';
     return card
